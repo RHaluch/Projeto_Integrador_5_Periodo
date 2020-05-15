@@ -28,12 +28,14 @@
         android:layout_height="wrap_content"/>
 
     <Button
+        android:id="@+id/btnEntrar"
         android:text="ENTRAR"
         android:onClick="entrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
+        android:id="@+id/btnCadastrar"
         android:text="CADASTRAR"
         android:onClick="cadastrar"
         android:layout_width="match_parent"
@@ -57,12 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20sp"/>
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/signInFacebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40sp"
-            android:layout_marginTop="15dp"/>
+
 
     </LinearLayout>
 
