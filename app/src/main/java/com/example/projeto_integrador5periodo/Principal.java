@@ -9,13 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Principal extends AppCompatActivity {
 
@@ -40,9 +41,13 @@ public class Principal extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account != null){
-            textWelcome.setText(account.getEmail());
+        if(mAuth.getCurrentUser()!=null){
+            FirebaseUser user = mAuth.getCurrentUser();
+            if(user.getDisplayName()==null) {
+                textWelcome.setText("Bem vindo: "+user.getEmail());
+            }else{
+                textWelcome.setText("Bem vindo: "+user.getDisplayName());
+            }
         }
     }
 
@@ -57,6 +62,8 @@ public class Principal extends AppCompatActivity {
                         Toast.makeText(Principal.this,"Saiu com sucesso!",Toast.LENGTH_SHORT).show();
                     }
                 });
+        LoginManager.getInstance().logOut();
+
         Intent inicio = new Intent(Principal.this, Login.class);
         startActivity(inicio);
         finish();
