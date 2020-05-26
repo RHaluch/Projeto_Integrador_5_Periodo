@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10sp"
+    android:layout_marginRight="10sp"
     android:orientation="vertical"
     tools:context=".LoginCadastrar">
 
@@ -26,6 +28,7 @@
     <EditText
         android:id="@+id/editLogin"
         android:hint="Digite o e-mail"
+        android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <EditText

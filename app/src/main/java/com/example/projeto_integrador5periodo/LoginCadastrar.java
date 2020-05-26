@@ -37,27 +37,40 @@ public class LoginCadastrar extends AppCompatActivity {
         String senha = editSenha.getText().toString();
         String confirmacao = editConSenha.getText().toString();
 
-        if (login.isEmpty() || senha.isEmpty() || confirmacao.isEmpty()){
-            Toast.makeText(LoginCadastrar.this, "Favor preencher os campos", Toast.LENGTH_SHORT).show();
+        if (login.isEmpty()){
+            editLogin.setError("Preencha o campo com seu email para login");
+            editLogin.requestFocus();
+            return;
+        }
+        if(senha.isEmpty()){
+            editSenha.setError("Digite uma senha");
+            editSenha.requestFocus();
+            return;
+        }
+        if(confirmacao.isEmpty()){
+            editConSenha.setError("Comfirme sua senha");
+            editConSenha.requestFocus();
+            return;
+        }
+
+        if (senha.equals(confirmacao)){
+            mAuth.createUserWithEmailAndPassword(login,senha)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                updateUI(user);
+                            }else {
+                                Toast.makeText(LoginCadastrar.this, "Falha ao criar o usuario", Toast.LENGTH_SHORT).show();
+                                updateUI(null);
+                            }
+                        }
+                    });
         }else {
-            if (senha.equals(confirmacao)){
-                mAuth.createUserWithEmailAndPassword(login,senha)
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()){
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUI(user);
-                                    }else {
-                                        Toast.makeText(LoginCadastrar.this, "Falha ao criar o usuario", Toast.LENGTH_SHORT).show();
-                                        updateUI(null);
-                                    }
-                                }
-                            });
-            }else {
-                Toast.makeText(LoginCadastrar.this, "Senhas não batem", Toast.LENGTH_SHORT).show();
-                updateUI(null);
-            }
+            editConSenha.setError("A confirmação deve ser igual a senha");
+            editConSenha.requestFocus();
+            updateUI(null);
         }
     }
 

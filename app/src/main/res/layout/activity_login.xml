@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10sp"
+    android:layout_marginRight="10sp"
+    android:orientation="vertical"
     tools:context=".Login">
 
     <TextView
@@ -19,8 +21,10 @@
         android:id="@+id/editLogin"
         android:hint="Digite o login"
         android:textAlignment="center"
+        android:inputType="textEmailAddress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/editSenha"
@@ -28,14 +32,16 @@
         android:textAlignment="center"
         android:inputType="textPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnEntrar"
         android:text="ENTRAR"
         android:onClick="entrarEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnCadastrar"
@@ -44,31 +50,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/btnEmail"
+        android:layout_marginTop="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrar com email"
+        android:onClick="changeLayout"/>
+
     <TextView
+        android:id="@+id/servicesText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ENTRAR COM OUTROS SERVIÇOS"
         android:layout_marginTop="20sp"
-        android:layout_marginBottom="20sp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:visibility="gone"/>
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        android:rowCount="1"
+        android:columnCount="2">
+
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/signInGoogle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25sp"/>
+            android:layout_row="0"
+            android:layout_column="0"/>
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/signInFacebook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15sp"
-            android:layout_marginLeft="45sp"/>
+            android:layout_gravity="center_vertical|right"
+            android:layout_row="0"
+            android:layout_column="1"/>
 
-    </LinearLayout>
+    </GridLayout>
 
 </LinearLayout>

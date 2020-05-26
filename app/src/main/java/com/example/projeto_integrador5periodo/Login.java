@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -29,9 +31,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class Login extends AppCompatActivity implements View.OnClickListener{
+public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editLogin, editSenha;
+    private Button btnEntrar, btnEmail;
+    private TextView serviceText;
     private GoogleSignInClient mGoogleSignInClient; //Cliente do Google
     private FirebaseAuth mAuth; //Firebase Autenticador
     private CallbackManager mCallbackManager;
@@ -59,13 +63,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         editLogin = findViewById(R.id.editLogin);
         editSenha = findViewById(R.id.editSenha);
+        btnEmail = findViewById(R.id.btnEmail);
+        btnEntrar = findViewById(R.id.btnEntrar);
+        serviceText = findViewById(R.id.servicesText);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (mAuth.getCurrentUser()!=null){
+        if (mAuth.getCurrentUser() != null) {
             /*GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(this);
             if(googleAccount != null) {
                 Intent principal = new Intent(Login.this, Principal.class);
@@ -86,17 +93,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String login = editLogin.getText().toString();
         String senha = editSenha.getText().toString();
 
-        if (login.isEmpty() || senha.isEmpty()){
-            Toast.makeText(Login.this,"Favor preencher os campos!",Toast.LENGTH_SHORT).show();
-        }else {
-            mAuth.signInWithEmailAndPassword(login,senha).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        if (login.isEmpty() || senha.isEmpty()) {
+            Toast.makeText(Login.this, "Favor preencher os campos!", Toast.LENGTH_SHORT).show();
+        } else {
+            mAuth.signInWithEmailAndPassword(login, senha).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI();
-                    }else{
-                        Toast.makeText(Login.this,"Falha ao Autenticar Usuario!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Login.this, "Falha ao Autenticar Usuario!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -105,7 +112,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
 
             //Google
             case R.id.signInGoogle:
@@ -113,22 +120,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 startActivityForResult(signInIntent, 1);
                 break;
 
-                //Facebook
+            //Facebook
             case R.id.signInFacebook:
                 LoginButton loginButton = findViewById(R.id.signInFacebook);
                 loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(Login.this,"Login com facobook efetuado!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Login com facobook efetuado!", Toast.LENGTH_SHORT).show();
                         handleFacebookAccessToken(loginResult.getAccessToken());
                     }
+
                     @Override
                     public void onCancel() {
-                       Toast.makeText(Login.this,"Login com facobook cancelado!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Login com facobook cancelado!", Toast.LENGTH_SHORT).show();
                     }
+
                     @Override
                     public void onError(FacebookException error) {
-                        Toast.makeText(Login.this,"Erro ao tentar login com facobook!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Erro ao tentar login com facobook!", Toast.LENGTH_SHORT).show();
                     }
                 });
         }
@@ -141,7 +150,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         if (requestCode == 1) { //Google
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }else{
+        } else {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -158,7 +167,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             firebaseAuthWithGoogle(account);
         } catch (ApiException e) {
-            Toast.makeText(Login.this,"Falha ao Logar com Conta Goggle! Codigo do Erro =" + e.getStatusCode(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(Login.this, "Falha ao Logar com Conta Goggle! Codigo do Erro =" + e.getStatusCode(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -170,10 +179,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(Login.this,"Entrou Com Google!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Entrou Com Google!", Toast.LENGTH_SHORT).show();
                             updateUI();
                         } else {
-                            Toast.makeText(Login.this,"Falha ao autenticar Com Google!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Falha ao autenticar Com Google!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -197,4 +206,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 });
     }
 
+    public void changeLayout(View view) {
+        btnEmail.setVisibility(View.GONE);
+        editLogin.setVisibility(View.VISIBLE);
+        editSenha.setVisibility(View.VISIBLE);
+        serviceText.setVisibility(View.VISIBLE);
+        btnEntrar.setVisibility(View.VISIBLE);
+    }
 }
