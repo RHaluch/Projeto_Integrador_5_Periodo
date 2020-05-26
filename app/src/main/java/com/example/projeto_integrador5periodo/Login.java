@@ -86,17 +86,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String login = editLogin.getText().toString();
         String senha = editSenha.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(login,senha).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI();
-                }else{
-                    Toast.makeText(Login.this,"Falha ao Autenticar Usuario!",Toast.LENGTH_SHORT);
+        if (login.isEmpty() || senha.isEmpty()){
+            Toast.makeText(Login.this,"Favor preencher os campos!",Toast.LENGTH_SHORT).show();
+        }else {
+            mAuth.signInWithEmailAndPassword(login,senha).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI();
+                    }else{
+                        Toast.makeText(Login.this,"Falha ao Autenticar Usuario!",Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

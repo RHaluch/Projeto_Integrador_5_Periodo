@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginCadastrar extends AppCompatActivity {
 
-    private EditText editLogin, editSenha;
+    private EditText editLogin, editSenha, editConSenha;
     private FirebaseAuth mAuth;
 
     @Override
@@ -27,6 +27,7 @@ public class LoginCadastrar extends AppCompatActivity {
 
         editLogin = findViewById(R.id.editLogin);
         editSenha = findViewById(R.id.editSenha);
+        editConSenha = findViewById(R.id.editConSenha);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -34,20 +35,30 @@ public class LoginCadastrar extends AppCompatActivity {
     public void registrar(View view) {
         String login = editLogin.getText().toString();
         String senha = editSenha.getText().toString();
+        String confirmacao = editConSenha.getText().toString();
 
-        mAuth.createUserWithEmailAndPassword(login,senha)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        }else {
-                            Toast.makeText(LoginCadastrar.this, "Falha ao criar o usuario", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
+        if (login.isEmpty() || senha.isEmpty() || confirmacao.isEmpty()){
+            Toast.makeText(LoginCadastrar.this, "Favor preencher os campos", Toast.LENGTH_SHORT).show();
+        }else {
+            if (senha.equals(confirmacao)){
+                mAuth.createUserWithEmailAndPassword(login,senha)
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()){
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUI(user);
+                                    }else {
+                                        Toast.makeText(LoginCadastrar.this, "Falha ao criar o usuario", Toast.LENGTH_SHORT).show();
+                                        updateUI(null);
+                                    }
+                                }
+                            });
+            }else {
+                Toast.makeText(LoginCadastrar.this, "Senhas não batem", Toast.LENGTH_SHORT).show();
+                updateUI(null);
+            }
+        }
     }
 
     private void updateUI(FirebaseUser user) {
