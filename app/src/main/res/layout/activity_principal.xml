@@ -22,6 +22,24 @@
         android:layout_height="wrap_content"
         android:id="@+id/textWelcome"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Digite o titulo do filme"
+        android:textAlignment="center"
+        android:id="@+id/editTitulo"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buscar Informações"
+        android:onClick="buscarFilme"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/resultado"/>
+
     <Button
         android:text="SAIR"
         android:layout_width="wrap_content"
