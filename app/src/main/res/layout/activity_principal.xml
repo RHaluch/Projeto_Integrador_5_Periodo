@@ -22,35 +22,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/textWelcome"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Digite o titulo do filme"
-        android:textAlignment="center"
-        android:id="@+id/editTitulo"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Digite o ano de lançamento do filme (opcional)"
-        android:textAlignment="center"
-        android:id="@+id/editAno"/>
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Buscar Informações"
+        android:text="Buscar Filme"
         android:onClick="buscarFilme"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/poster"
-        android:layout_gravity="center"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/resultado"/>
 
     <Button
         android:text="SAIR"

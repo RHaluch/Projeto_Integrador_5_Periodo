@@ -36,11 +36,9 @@ import java.net.HttpURLConnection;
 
 public class Principal extends AppCompatActivity {
 
-    private TextView textWelcome, resultado;
-    private EditText editTitulo, editAno;
+    private TextView textWelcome;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private ImageView poster;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +46,7 @@ public class Principal extends AppCompatActivity {
         setContentView(R.layout.activity_principal);
 
         textWelcome = findViewById(R.id.textWelcome);
-        resultado = findViewById(R.id.resultado);
-        editTitulo = findViewById(R.id.editTitulo);
-        editAno = findViewById(R.id.editAno);
         mAuth = FirebaseAuth.getInstance();
-        poster = findViewById(R.id.poster);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -91,73 +85,9 @@ public class Principal extends AppCompatActivity {
     }
 
     public void buscarFilme(View view) {
-        String titulo = editTitulo.getText().toString();
-        String ano = editAno.getText().toString();
-
-        if(!titulo.isEmpty()) {
-            String url;
-            if(!ano.isEmpty()) {
-                url = "https://www.omdbapi.com/?apikey=1caed040&t=" + editTitulo.getText() + "y=" + ano;
-            }else{
-                url = "https://www.omdbapi.com/?apikey=1caed040&t=" + editTitulo.getText();
-            }
-
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        if(response.getString("Response").contains("False")){
-                            resultado.setText("Filme não encontrado!");
-                            poster.setImageBitmap(null);
-                        }else {
-                            Filme filme = new Filme();
-                            filme.setTitulo(response.getString("Title"));
-                            filme.setClassificacao(response.getString("Rated"));
-                            filme.setDataLancamento(response.getString("Released"));
-                            filme.setGenero(response.getString("Genre"));
-                            filme.setDiretor(response.getString("Director"));
-                            filme.setEnredo(response.getString("Plot"));
-                            filme.setPoster(response.getString("Poster"));
-                            filme.setPais(response.getString("Country"));
-                            filme.setNotaIMDB(response.getDouble("imdbRating"));
-                            mostrarFilme(filme);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                }
-            });
-            APISingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
-        }else{
-            Toast.makeText(Principal.this,"Por favor informe o titulo do filme!",Toast.LENGTH_LONG).show();
-        }
+        Intent novoLogin = new Intent(Principal.this, Pesquisa.class);
+        startActivity(novoLogin);
+        finish();
     }
 
-    private void mostrarFilme(Filme filme){
-        Bitmap posterFilme = getBitmapFromURL(filme.getPoster());
-        poster.setImageBitmap(posterFilme);
-        resultado.setText(filme.toString());
-    }
-    private Bitmap getBitmapFromURL(String src) {
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
-            StrictMode.setThreadPolicy(policy);
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
