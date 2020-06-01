@@ -76,14 +76,14 @@ public class LoginCadastrar extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null){
-            Intent dashboard = new Intent(LoginCadastrar.this,Login.class);
-            startActivity(dashboard);
+            Intent principal = new Intent(LoginCadastrar.this,Principal.class);
+            startActivity(principal);
             finish();
         }
     }
 
     public void voltar(View view) {
-        Intent cadoneactivity = new Intent(LoginCadastrar.this,Login.class);
-        startActivity(cadoneactivity);
+        Intent login = new Intent(LoginCadastrar.this,Login.class);
+        startActivity(login);
     }
 }

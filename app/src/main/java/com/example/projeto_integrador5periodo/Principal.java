@@ -4,13 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,17 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import org.json.JSONException;
-import org.json.JSONObject;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.projeto_integrador5periodo.Util.APISingleton;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 
 public class Principal extends AppCompatActivity {
 
@@ -51,6 +35,7 @@ public class Principal extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
     }
 
     @Override
@@ -58,10 +43,14 @@ public class Principal extends AppCompatActivity {
         super.onStart();
         if(mAuth.getCurrentUser()!=null){
             FirebaseUser user = mAuth.getCurrentUser();
-            if(user.getDisplayName().isEmpty()) {
+            if(user.getDisplayName()==null) {
                 textWelcome.setText("Bem vindo: "+user.getEmail());
             }else{
-                textWelcome.setText("Bem vindo: "+user.getDisplayName());
+                if(!user.getDisplayName().isEmpty()) {
+                    textWelcome.setText("Bem vindo: " + user.getDisplayName());
+                }else{
+                    textWelcome.setText("Bem vindo: "+user.getEmail());
+                }
             }
         }
     }
@@ -85,8 +74,8 @@ public class Principal extends AppCompatActivity {
     }
 
     public void buscarFilme(View view) {
-        Intent novoLogin = new Intent(Principal.this, Pesquisa.class);
-        startActivity(novoLogin);
+        Intent buscar = new Intent(Principal.this, Pesquisa.class);
+        startActivity(buscar);
         finish();
     }
 

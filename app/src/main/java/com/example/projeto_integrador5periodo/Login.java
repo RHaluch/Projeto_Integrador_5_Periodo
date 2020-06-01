@@ -72,14 +72,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-
         if (mAuth.getCurrentUser() != null) {
-            /*GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(this);
-            if(googleAccount != null) {
-                Intent principal = new Intent(Login.this, Principal.class);
-                startActivity(principal);
-                //updateUI();
-            }*/
             updateUI();
         }
     }
@@ -127,18 +120,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(Login.this, "Login com facobook efetuado!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Login com facebook efetuado!", Toast.LENGTH_SHORT).show();
                         handleFacebookAccessToken(loginResult.getAccessToken());
                     }
 
                     @Override
                     public void onCancel() {
-                        Toast.makeText(Login.this, "Login com facobook cancelado!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Login com facebook cancelado!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(FacebookException error) {
-                        Toast.makeText(Login.this, "Erro ao tentar login com facobook!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Erro ao tentar login com facebook!", Toast.LENGTH_SHORT).show();
                     }
                 });
         }
@@ -211,9 +204,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btnEmail.setVisibility(View.GONE);
         editLogin.setVisibility(View.VISIBLE);
         editSenha.setVisibility(View.VISIBLE);
-        serviceText.setVisibility(View.VISIBLE);
         btnEntrar.setVisibility(View.VISIBLE);
         btnForgotPwd.setVisibility(View.VISIBLE);
+
     }
 
     public void forgotPassword(View view) {

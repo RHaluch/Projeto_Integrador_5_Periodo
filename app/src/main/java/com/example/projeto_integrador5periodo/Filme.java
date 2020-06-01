@@ -1,10 +1,9 @@
 package com.example.projeto_integrador5periodo;
 
 public class Filme {
-    String titulo, classificacao, dataLancamento, genero, diretor, enredo, poster, pais;
-    double notaIMDB;
+    String titulo, classificacao, dataLancamento, genero, diretor, enredo, poster, pais, notaIMDB;
 
-    public Filme(String titulo, String classificacao, String dataLancamento, String genero, String diretor, String enredo, String poster, String pais, double notaIMDB) {
+    public Filme(String titulo, String classificacao, String dataLancamento, String genero, String diretor, String enredo, String poster, String pais, String notaIMDB) {
         this.titulo = titulo;
         this.classificacao = classificacao;
         this.dataLancamento = dataLancamento;
@@ -67,10 +66,10 @@ public class Filme {
         this.poster = poster;
     }
 
-    public double getNotaIMDB() {
+    public String getNotaIMDB() {
         return notaIMDB;
     }
-    public void setNotaIMDB(double notaIMDB) {
+    public void setNotaIMDB(String notaIMDB) {
         this.notaIMDB = notaIMDB;
     }
 

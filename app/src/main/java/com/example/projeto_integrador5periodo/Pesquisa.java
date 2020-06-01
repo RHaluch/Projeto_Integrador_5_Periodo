@@ -36,10 +36,9 @@ package com.example.projeto_integrador5periodo;
 
 public class Pesquisa extends AppCompatActivity {
 
-    private TextView textWelcome, resultado;
+    private TextView textUsuario, resultado;
     private EditText editTitulo, editAno;
     private FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
     private ImageView poster;
 
     @Override
@@ -47,16 +46,12 @@ public class Pesquisa extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pesquisa);
 
-        textWelcome = findViewById(R.id.textWelcome);
+        textUsuario = findViewById(R.id.textUsuario);
         resultado = findViewById(R.id.resultado);
         editTitulo = findViewById(R.id.editTitulo);
         editAno = findViewById(R.id.editAno);
         mAuth = FirebaseAuth.getInstance();
         poster = findViewById(R.id.poster);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
@@ -64,17 +59,21 @@ public class Pesquisa extends AppCompatActivity {
         super.onStart();
         if(mAuth.getCurrentUser()!=null){
             FirebaseUser user = mAuth.getCurrentUser();
-            if(user.getDisplayName().isEmpty()) {
-                textWelcome.setText("Bem vindo: "+user.getEmail());
+            if(user.getDisplayName()==null) {
+                textUsuario.setText(user.getEmail());
             }else{
-                textWelcome.setText("Bem vindo: "+user.getDisplayName());
+                if(!user.getDisplayName().isEmpty()) {
+                    textUsuario.setText(user.getDisplayName());
+                }else{
+                    textUsuario.setText(user.getEmail());
+                }
             }
         }
     }
 
     public void voltar(View view){
-        Intent novoLogin = new Intent(Pesquisa.this, Principal.class);
-        startActivity(novoLogin);
+        Intent principal = new Intent(Pesquisa.this, Principal.class);
+        startActivity(principal);
         finish();
     }
 
@@ -85,7 +84,7 @@ public class Pesquisa extends AppCompatActivity {
         if(!titulo.isEmpty()) {
             String url;
             if(!ano.isEmpty()) {
-                url = "https://www.omdbapi.com/?apikey=1caed040&t=" + editTitulo.getText() + "y=" + ano;
+                url = "https://www.omdbapi.com/?apikey=1caed040&t=" + editTitulo.getText() + "&y=" + ano;
             }else{
                 url = "https://www.omdbapi.com/?apikey=1caed040&t=" + editTitulo.getText();
             }
@@ -107,7 +106,7 @@ public class Pesquisa extends AppCompatActivity {
                             filme.setEnredo(response.getString("Plot"));
                             filme.setPoster(response.getString("Poster"));
                             filme.setPais(response.getString("Country"));
-                            filme.setNotaIMDB(response.getDouble("imdbRating"));
+                            filme.setNotaIMDB(response.getString("imdbRating"));
                             mostrarFilme(filme);
                         }
                     } catch (JSONException e) {
