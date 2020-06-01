@@ -36,6 +36,17 @@
         android:visibility="gone"/>
 
     <Button
+        android:id="@+id/btnForgotPwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="Esqueci minha senha..."
+        android:visibility="gone"
+        android:textAllCaps="false"
+        android:textColor="@android:color/holo_blue_dark"
+        android:onClick="forgotPassword"/>
+
+    <Button
         android:id="@+id/btnEntrar"
         android:text="ENTRAR"
         android:onClick="entrarEmail"

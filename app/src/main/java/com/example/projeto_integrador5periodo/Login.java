@@ -34,7 +34,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editLogin, editSenha;
-    private Button btnEntrar, btnEmail;
+    private Button btnEntrar, btnEmail, btnForgotPwd;
     private TextView serviceText;
     private GoogleSignInClient mGoogleSignInClient; //Cliente do Google
     private FirebaseAuth mAuth; //Firebase Autenticador
@@ -65,6 +65,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         editSenha = findViewById(R.id.editSenha);
         btnEmail = findViewById(R.id.btnEmail);
         btnEntrar = findViewById(R.id.btnEntrar);
+        btnForgotPwd = findViewById(R.id.btnForgotPwd);
         serviceText = findViewById(R.id.servicesText);
     }
 
@@ -167,7 +168,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             firebaseAuthWithGoogle(account);
         } catch (ApiException e) {
-            Toast.makeText(Login.this, "Falha ao Logar com Conta Goggle! Codigo do Erro =" + e.getStatusCode(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(Login.this, "Falha ao Logar com Conta Google! Codigo do Erro =" + e.getStatusCode(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -212,5 +213,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         editSenha.setVisibility(View.VISIBLE);
         serviceText.setVisibility(View.VISIBLE);
         btnEntrar.setVisibility(View.VISIBLE);
+        btnForgotPwd.setVisibility(View.VISIBLE);
+    }
+
+    public void forgotPassword(View view) {
+        Intent resetPassword = new Intent(Login.this, RecuperarSenha.class);
+        startActivity(resetPassword);
+        finish();
     }
 }
