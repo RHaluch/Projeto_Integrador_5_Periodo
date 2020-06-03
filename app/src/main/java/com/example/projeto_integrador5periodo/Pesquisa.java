@@ -1,38 +1,40 @@
 package com.example.projeto_integrador5periodo;
 
-        import androidx.annotation.NonNull;
-        import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.os.Bundle;
-        import android.os.StrictMode;
-        import android.view.View;
-        import android.widget.EditText;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.projeto_integrador5periodo.Util.APISingleton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-        import com.facebook.login.LoginManager;
-        import com.google.android.gms.auth.api.signin.GoogleSignIn;
-        import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-        import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-        import com.google.android.gms.tasks.OnCompleteListener;
-        import com.google.android.gms.tasks.Task;
-        import com.google.firebase.auth.FirebaseAuth;
-        import com.google.firebase.auth.FirebaseUser;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-        import com.android.volley.Request;
-        import com.android.volley.Response;
-        import com.android.volley.VolleyError;
-        import com.android.volley.toolbox.JsonObjectRequest;
-        import com.example.projeto_integrador5periodo.Util.APISingleton;
-
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.net.HttpURLConnection;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 public class Pesquisa extends AppCompatActivity {
 
@@ -40,6 +42,9 @@ public class Pesquisa extends AppCompatActivity {
     private EditText editTitulo, editAno;
     private FirebaseAuth mAuth;
     private ImageView poster;
+    private FirebaseFirestore dataBase;
+    private StorageReference storage;
+    Filme filme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,9 @@ public class Pesquisa extends AppCompatActivity {
         editAno = findViewById(R.id.editAno);
         mAuth = FirebaseAuth.getInstance();
         poster = findViewById(R.id.poster);
+        dataBase = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance().getReference();
+
     }
 
     @Override
@@ -96,8 +104,9 @@ public class Pesquisa extends AppCompatActivity {
                         if(response.getString("Response").contains("False")){
                             resultado.setText("Filme não encontrado!");
                             poster.setImageBitmap(null);
+                            filme = null;
                         }else {
-                            Filme filme = new Filme();
+                            filme = new Filme();
                             filme.setTitulo(response.getString("Title"));
                             filme.setClassificacao(response.getString("Rated"));
                             filme.setDataLancamento(response.getString("Released"));
@@ -107,7 +116,7 @@ public class Pesquisa extends AppCompatActivity {
                             filme.setPoster(response.getString("Poster"));
                             filme.setPais(response.getString("Country"));
                             filme.setNotaIMDB(response.getString("imdbRating"));
-                            mostrarFilme(filme);
+                            mostrarFilme();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -125,11 +134,11 @@ public class Pesquisa extends AppCompatActivity {
         }
     }
 
-    private void mostrarFilme(Filme filme){
-        Bitmap posterFilme = getBitmapFromURL(filme.getPoster());
-        poster.setImageBitmap(posterFilme);
+    private void mostrarFilme(){
+        poster.setImageBitmap(getBitmapFromURL(filme.getPoster()));
         resultado.setText(filme.toString());
     }
+
     private Bitmap getBitmapFromURL(String src) {
         try {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
@@ -145,6 +154,50 @@ public class Pesquisa extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void adicionarFilme(View view) {
+        if(filme==null){
+            Toast.makeText(Pesquisa.this,"Favor encontrar um filme antes!",Toast.LENGTH_SHORT).show();
+        }else{
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            dataBase.collection("usuarios").document(user.getEmail()).collection("filmes").add(filme).addOnSuccessListener(
+                    new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            String idFilme = documentReference.getId();
+                            StorageReference imageRef = storage.child("posters/" + documentReference.getParent().getParent().getId() + "/" + idFilme+".jpeg");
+
+                            Bitmap bitmap = ((BitmapDrawable) poster.getDrawable()).getBitmap();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] data = baos.toByteArray();
+
+                            UploadTask uploadTask = imageRef.putBytes(data);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(Pesquisa.this,"Falha no upload do poster",Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Toast.makeText(Pesquisa.this,"Filme salvo com sucesso!",Toast.LENGTH_LONG).show();
+                                    finish();
+                                    overridePendingTransition(0, 0);
+                                    startActivity(getIntent());
+                                    overridePendingTransition(0, 0);
+                                }
+                            });
+                        }
+                    }
+            ).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(Pesquisa.this,"Falha ao adicionar filme!",Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }
