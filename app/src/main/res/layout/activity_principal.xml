@@ -34,4 +34,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnSair"
         android:onClick="sair"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mascara"
+        android:onClick="abrirMascara"
+        android:id="@+id/btnMascara"/>
 </LinearLayout>

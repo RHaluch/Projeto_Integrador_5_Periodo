@@ -79,4 +79,9 @@ public class Principal extends AppCompatActivity {
         finish();
     }
 
+    public void abrirMascara(View view) {
+        Intent mascara = new Intent(Principal.this, Mascara.class);
+        startActivity(mascara);
+        finish();
+    }
 }
