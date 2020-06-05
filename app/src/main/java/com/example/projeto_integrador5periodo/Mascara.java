@@ -70,7 +70,7 @@ public class Mascara extends AppCompatActivity {
     }
 
     public void processar(View view) {
-        String postUrl= "http://192.168.15.12:5000";
+        String postUrl= "http://SEU IP AQUI:5000";
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
