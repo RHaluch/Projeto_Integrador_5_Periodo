@@ -113,7 +113,7 @@ public class Pesquisa extends AppCompatActivity {
                             filme.setGenero(response.getString("Genre"));
                             filme.setDiretor(response.getString("Director"));
                             filme.setEnredo(response.getString("Plot"));
-                            filme.setPoster(response.getString("Poster"));
+                            filme.setPosterURL(response.getString("Poster"));
                             filme.setPais(response.getString("Country"));
                             filme.setNotaIMDB(response.getString("imdbRating"));
                             mostrarFilme();
@@ -135,7 +135,7 @@ public class Pesquisa extends AppCompatActivity {
     }
 
     private void mostrarFilme(){
-        poster.setImageBitmap(getBitmapFromURL(filme.getPoster()));
+        poster.setImageBitmap(getBitmapFromURL(filme.getPosterURL()));
         resultado.setText(filme.toString());
     }
 

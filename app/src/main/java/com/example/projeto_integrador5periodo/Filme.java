@@ -1,20 +1,40 @@
 package com.example.projeto_integrador5periodo;
 
-public class Filme {
-    String titulo, classificacao, dataLancamento, genero, diretor, enredo, poster, pais, notaIMDB;
+import android.graphics.Bitmap;
 
-    public Filme(String titulo, String classificacao, String dataLancamento, String genero, String diretor, String enredo, String poster, String pais, String notaIMDB) {
+public class Filme {
+    String titulo, classificacao, dataLancamento, genero, diretor, enredo, posterURL,
+            pais, notaIMDB, idFireStore;
+    Bitmap poster;
+
+    public Filme(String titulo, String classificacao, String dataLancamento, String genero, String diretor,
+                 String enredo, String posterURL, String pais, String notaIMDB, Bitmap poster) {
         this.titulo = titulo;
         this.classificacao = classificacao;
         this.dataLancamento = dataLancamento;
         this.genero = genero;
         this.diretor = diretor;
         this.enredo = enredo;
-        this.poster = poster;
+        this.posterURL = posterURL;
         this.pais = pais;
         this.notaIMDB = notaIMDB;
+        this.poster = poster;
     }
     public Filme() {
+    }
+
+    public String getIdFireStore() {
+        return idFireStore;
+    }
+    public void setIdFireStore(String idFireStore) {
+        this.idFireStore = idFireStore;
+    }
+
+    public Bitmap getPoster() {
+        return poster;
+    }
+    public void setPoster(Bitmap poster) {
+        this.poster = poster;
     }
 
     public String getTitulo() {
@@ -59,11 +79,11 @@ public class Filme {
         this.enredo = enredo;
     }
 
-    public String getPoster() {
-        return poster;
+    public String getPosterURL() {
+        return posterURL;
     }
-    public void setPoster(String poster) {
-        this.poster = poster;
+    public void setPosterURL(String posterURL) {
+        this.posterURL = posterURL;
     }
 
     public String getNotaIMDB() {
@@ -89,7 +109,7 @@ public class Filme {
                 ", genero='" + genero + '\'' +
                 ", diretor='" + diretor + '\'' +
                 ", enredo='" + enredo + '\'' +
-                ", poster='" + poster + '\'' +
+                ", poster='" + posterURL + '\'' +
                 ", pais='" + pais + '\'' +
                 ", notaIMDB=" + notaIMDB +
                 '}';

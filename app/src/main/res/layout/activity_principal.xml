@@ -41,4 +41,24 @@
         android:text="Mascara"
         android:onClick="abrirMascara"
         android:id="@+id/btnMascara"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trazer meus filmes"
+        android:onClick="buscarMeusFilmes"
+        android:id="@+id/btnMeusFilmes"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trazer filme por titulo"
+        android:onClick="meuFilmeTitulo"
+        android:id="@+id/btnMeuFilmeTitulo"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Titulo do filme"
+        android:id="@+id/trazerTitulo"/>
 </LinearLayout>

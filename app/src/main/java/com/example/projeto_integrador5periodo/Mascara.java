@@ -124,13 +124,12 @@ public class Mascara extends AppCompatActivity {
                         @Override
                         public void run() {
                             loading.setVisibility(View.GONE);
-                            info.setVisibility(View.GONE);
+                            info.setVisibility(View.INVISIBLE);
                             imageView.setImageBitmap(bitmap);
                         }
                     });
-                } else {
-                    //Handle the error
                 }
+                //Handle the error
             }
         });
     }
