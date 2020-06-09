@@ -1,7 +1,5 @@
 package com.example.projeto_integrador5periodo;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,10 +14,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.dhaval2404.imagepicker.ImagePicker;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -132,5 +136,11 @@ public class Mascara extends AppCompatActivity {
                 //Handle the error
             }
         });
+    }
+
+    public void voltar(View view) {
+        Intent principal = new Intent(Mascara.this, Principal.class);
+        startActivity(principal);
+        finish();
     }
 }
