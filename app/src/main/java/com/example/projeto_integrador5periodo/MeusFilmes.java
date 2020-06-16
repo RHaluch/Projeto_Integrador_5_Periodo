@@ -1,14 +1,20 @@
 package com.example.projeto_integrador5periodo;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,19 +34,33 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MeusFilmes extends AppCompatActivity {
 
     private FirebaseFirestore db;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meus_filmes);
+
+        listView = findViewById(R.id.listaFilmes);
+
+        /*listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Filme filme = (Filme)listView.getItemAtPosition(i);
+                Toast.makeText(MeusFilmes.this,filme.getIdFireStore(),Toast.LENGTH_SHORT).show();
+            }
+        });*/
     }
 
-    public void meuFilmeTitulo(final View View){
+   /* public void meuFilmeTitulo(final View View){
         Query query;
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -68,7 +88,7 @@ public class MeusFilmes extends AppCompatActivity {
                         mostrarGrid(filme);
                        /* EditText trazerTitulo = findViewById(R.id.trazerTitulo);
                         trazerTitulo.setVisibility(View.VISIBLE);
-                        trazerTitulo.setText(filme.toString());*/
+                        trazerTitulo.setText(filme.toString());
                     }
                 }
             }
@@ -79,7 +99,7 @@ public class MeusFilmes extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 
     public void buscarMeusFilmes(View view) {
         Query query;
@@ -90,10 +110,11 @@ public class MeusFilmes extends AppCompatActivity {
         query = filmes;
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
-                    List<Filme> lista = new ArrayList();
+                    List<Filme> lista = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         Filme filme = new Filme();
                         filme.setIdFireStore(doc.getId());
@@ -105,14 +126,18 @@ public class MeusFilmes extends AppCompatActivity {
                         filme.setEnredo(doc.getString("enredo"));
                         filme.setNotaIMDB(doc.getString("notaIMDB"));
                         filme.setPais(doc.getString("pais"));
-                        buscarPoster(filme.getIdFireStore(), user.getEmail());
-
-                        mostrarGrid(filme);
                         lista.add(filme);
                     }
-                    //EditText trazerTitulo = findViewById(R.id.trazerTitulo);
-                    //trazerTitulo.setVisibility(View.VISIBLE);
-                    //trazerTitulo.setText(lista.toString());
+
+                    Collections.sort(lista,new Comparator<Filme>() {
+                        @Override
+                        public int compare(Filme item, Filme t1) {
+                            String s1 = item.getTitulo();
+                            String s2 = t1.getTitulo();
+                            return s1.compareToIgnoreCase(s2);
+                        }
+                    });
+                    preencherListView(lista);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -123,31 +148,14 @@ public class MeusFilmes extends AppCompatActivity {
         });
     }
 
-    private void buscarPoster(String idFilme, String userEmail){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReferenceFromUrl("gs://pi-5-periodo.appspot.com/posters/"
-                + userEmail + "/" + idFilme + ".jpeg");
-
-        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                ImageView poster = findViewById(R.id.poster);
-                Picasso.get().load(uri).into(poster);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MeusFilmes.this,"Falha no download no Poster!",Toast.LENGTH_LONG).show();
-            }
-        });
-
-
+    private void preencherListView(List<Filme> lista){
+        FilmeAdapter adapter =
+                new FilmeAdapter(getBaseContext(), R.layout.filme_layout, lista);
+        listView.setAdapter(adapter);
     }
 
-    private void mostrarGrid(Filme filme) {
-        GridLayout grid = findViewById(R.id.Grid);
-        TextView titulo = findViewById(R.id.textTitulo);
-        titulo.setText(filme.getTitulo());
-        grid.setVisibility(View.VISIBLE);
+    public void voltarPrincipal(View view) {
+        Intent principal = new Intent(MeusFilmes.this, Principal.class);
+        startActivity(principal);
     }
 }

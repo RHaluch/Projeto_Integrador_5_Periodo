@@ -2,7 +2,7 @@ package com.example.projeto_integrador5periodo;
 
 import android.graphics.Bitmap;
 
-public class Filme {
+public class Filme{
     String titulo, classificacao, dataLancamento, genero, diretor, enredo, posterURL,
             pais, notaIMDB, idFireStore;
     Bitmap poster;
