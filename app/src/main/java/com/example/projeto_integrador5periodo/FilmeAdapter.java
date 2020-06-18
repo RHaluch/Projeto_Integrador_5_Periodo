@@ -1,69 +1,121 @@
 package com.example.projeto_integrador5periodo;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
-import com.google.android.gms.tasks.OnFailureListener;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firestore.v1.WriteResult;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class FilmeAdapter extends ArrayAdapter<Filme> {
+public class FilmeAdapter extends RecyclerView.Adapter<FilmeHolder> {
 
-    private List<Filme> items;
+    private final List<Filme> items;
+    private FirebaseFirestore dataBase;
+    private StorageReference storage;
 
-    public FilmeAdapter(Context context, int textViewResourceId, List<Filme> items) {
-        super(context, textViewResourceId, items);
+    public FilmeAdapter(List<Filme> items) {
         this.items = items;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        if (v == null) {
-            Context ctx = getContext();
-            LayoutInflater vi = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.filme_layout, null);
-        }
-        Filme filme = items.get(position);
-        if (filme != null) {
-            ((TextView) v.findViewById(R.id.textTitulo)).setText("Titulo: " + filme.getTitulo());
-            ((TextView) v.findViewById(R.id.textClasssificacao)).setText("Classificação:" + filme.getClassificacao());
-            ((TextView) v.findViewById(R.id.textData)).setText("Data: " + filme.getDataLancamento());
-            ((TextView) v.findViewById(R.id.textGenero)).setText("Genero: " + filme.getGenero());
-            ((TextView) v.findViewById(R.id.textDiretor)).setText("Diretor: "+ filme.getDiretor());
-            ((TextView) v.findViewById(R.id.textPais)).setText("Pais: " + filme.getPais());
-            ((TextView) v.findViewById(R.id.textNotaIMDB)).setText("Nota IMDB: " + filme.getNotaIMDB());
-            ((TextView) v.findViewById(R.id.textEnredo)).setText("Enredo: " + filme.getEnredo());
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            buscarPoster(filme.getIdFireStore(), user.getEmail(), v);
-        }
-        return v;
+    public void removerFilme(Filme filme) {
+        int position = items.indexOf(filme);
+        deletarPoster(filme.getIdFireStore());
+        deletarFilme(filme.getIdFireStore());
+        items.remove(position);
+        notifyItemRemoved(position);
     }
 
-    private void buscarPoster(String idFilme, String userEmail, final View v){
+    private void deletarFilme(String idFireStore) {
+        dataBase = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        dataBase.collection("usuarios").document(user.getEmail())
+                .collection("filmes").document(idFireStore).delete();
+    }
+
+    private void deletarPoster(String idFireStore) {
+
+        dataBase = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        StorageReference imageRef = storage.child("posters/" + user.getEmail() + "/" + idFireStore + ".jpeg");
+        imageRef.delete();
+    }
+
+    @NonNull
+    @Override
+    public FilmeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new FilmeHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.filme_layout, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final FilmeHolder holder, final int position) {
+
+        holder.textTitulo.setText("Titulo: " + items.get(position).getTitulo());
+        holder.textClassificacao.setText("Classificação: " + items.get(position).getClassificacao());
+        holder.textGenero.setText("Genero: " + items.get(position).getGenero());
+        holder.textData.setText("Data de Lançamento: " + items.get(position).getDataLancamento());
+        holder.textDiretor.setText("Diretor: " + items.get(position).getDiretor());
+        holder.textPais.setText("País: " + items.get(position).getPais());
+        holder.textEnredo.setText("Enredo: " + items.get(position).getEnredo());
+        holder.textNotaIMDB.setText("Nota IMDB: " + items.get(position).getNotaIMDB());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReferenceFromUrl("gs://pi-5-periodo.appspot.com/posters/"
-                + userEmail + "/" + idFilme + ".jpeg");
+                + user.getEmail() + "/" + items.get(position).getIdFireStore() + ".jpeg");
 
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                ImageView poster = v.findViewById(R.id.poster);
-                Picasso.get().load(uri).into(poster);
+                Picasso.get().load(uri).into(holder.poster);
             }
         });
+
+        final Filme filme = items.get(position);
+        holder.btnDeletar.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View view = v;
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Confirmação")
+                        .setMessage("Tem certeza que deseja excluir este filme?")
+                        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Filme filme = items.get(position);
+                                removerFilme(filme);
+
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .create()
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return items != null ? items.size() : 0;
     }
 }

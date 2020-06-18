@@ -3,6 +3,9 @@ package com.example.projeto_integrador5periodo;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -42,14 +45,15 @@ import java.util.List;
 public class MeusFilmes extends AppCompatActivity {
 
     private FirebaseFirestore db;
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private FilmeAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meus_filmes);
 
-        listView = findViewById(R.id.listaFilmes);
+        //listView = findViewById(R.id.listaFilmes);
 
         /*listView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
@@ -137,7 +141,7 @@ public class MeusFilmes extends AppCompatActivity {
                             return s1.compareToIgnoreCase(s2);
                         }
                     });
-                    preencherListView(lista);
+                    preencherRecyclerView(lista);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -148,10 +152,14 @@ public class MeusFilmes extends AppCompatActivity {
         });
     }
 
-    private void preencherListView(List<Filme> lista){
-        FilmeAdapter adapter =
-                new FilmeAdapter(getBaseContext(), R.layout.filme_layout, lista);
-        listView.setAdapter(adapter);
+    private void preencherRecyclerView(List<Filme> lista){
+        recyclerView = (RecyclerView)findViewById(R.id.listaFilmes);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new FilmeAdapter(lista);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     public void voltarPrincipal(View view) {

@@ -34,10 +34,11 @@
         android:hint="Titulo do filme"
         android:id="@+id/trazerTitulo"/> -->
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listaFilmes"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/filme_layout">
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
