@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Principal extends AppCompatActivity {
 
-    private TextView textWelcome;
+    private TextView textUser;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -28,7 +28,7 @@ public class Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
-        textWelcome = findViewById(R.id.textWelcome);
+        textUser = findViewById(R.id.textUser);
         mAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -43,12 +43,12 @@ public class Principal extends AppCompatActivity {
         if(mAuth.getCurrentUser()!=null){
             FirebaseUser user = mAuth.getCurrentUser();
             if(user.getDisplayName()==null) {
-                textWelcome.setText("Bem vindo: "+user.getEmail());
+                textUser.setText("Bem-vindo: " + user.getEmail());
             }else{
                 if(!user.getDisplayName().isEmpty()) {
-                    textWelcome.setText("Bem vindo: " + user.getDisplayName());
+                    textUser.setText("Bem-vindo: " + user.getDisplayName());
                 }else{
-                    textWelcome.setText("Bem vindo: "+user.getEmail());
+                    textUser.setText("Bem-vindo: " + user.getEmail());
                 }
             }
         }
@@ -66,7 +66,7 @@ public class Principal extends AppCompatActivity {
                 });
         LoginManager.getInstance().logOut();
 
-        Toast.makeText(Principal.this,"Saiu com sucesso!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(Principal.this,"Desconectado do sistema!",Toast.LENGTH_SHORT).show();
         Intent inicio = new Intent(Principal.this, Login.class);
         startActivity(inicio);
         finish();

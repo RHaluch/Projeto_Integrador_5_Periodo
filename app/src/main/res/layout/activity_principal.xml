@@ -17,35 +17,49 @@
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"/>
 
-    <TextView
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textWelcome"/>
+        android:rowCount="1"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textUser"
+            android:layout_column="0"
+            android:layout_row="0" />
+
+        <Button
+            android:text="SAIR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSair"
+            android:onClick="sair"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_gravity="right"/>
+
+    </GridLayout>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Adicionar Filme"
+        android:layout_marginTop="15sp"
+        android:text="Adicionar Filme a minha lista"
         android:onClick="buscarFilme"/>
 
     <Button
-        android:text="SAIR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSair"
-        android:onClick="sair"/>
-
-    <Button
         android:text="Mostrar minha lista de filmes"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnMinhaLista"
         android:onClick="minhaLista"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mascara"
+        android:text="Abrir Verificador de Mascara"
         android:onClick="abrirMascara"
         android:id="@+id/btnMascara"/>
 

@@ -2,7 +2,6 @@ package com.example.projeto_integrador5periodo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -87,8 +85,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         String login = editLogin.getText().toString();
         String senha = editSenha.getText().toString();
 
-        if (login.isEmpty() || senha.isEmpty()) {
-            Toast.makeText(Login.this, "Favor preencher os campos!", Toast.LENGTH_SHORT).show();
+        if (login.isEmpty()) {
+            editLogin.setError("Favor informar seu email de login!");
+            editLogin.requestFocus();
+            return;
+        }else if(senha.isEmpty()){
+            editSenha.setError("Favor informar sua senha!");
+            editSenha.requestFocus();
+            return;
         } else {
             mAuth.signInWithEmailAndPassword(login, senha).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -97,7 +101,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI();
                     } else {
-                        Toast.makeText(Login.this, "Falha ao Autenticar Usuario!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Falha ao Autenticar Usuario!", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -120,7 +124,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(Login.this, "Login com facebook efetuado!", Toast.LENGTH_SHORT).show();
                         handleFacebookAccessToken(loginResult.getAccessToken());
                     }
 
@@ -173,7 +176,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(Login.this, "Entrou Com Google!", Toast.LENGTH_SHORT).show();
                             updateUI();
                         } else {
                             Toast.makeText(Login.this, "Falha ao autenticar Com Google!", Toast.LENGTH_SHORT).show();
@@ -193,7 +195,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             updateUI();
                         } else {
-                            Toast.makeText(Login.this, "Authentication failed.",
+                            Toast.makeText(Login.this, "Falha ao autenticar com Facebook!",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
