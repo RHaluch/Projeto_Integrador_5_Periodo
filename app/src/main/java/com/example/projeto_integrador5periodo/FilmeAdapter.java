@@ -34,7 +34,7 @@ public class FilmeAdapter extends RecyclerView.Adapter<FilmeHolder> {
 
         deletarPoster(filme.getIdFireStore());
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        dataBase.collection("usuarios").document(user.getEmail())
+        dataBase.collection("usuarios").document(user.getUid())
                 .collection("filmes").document(filme.getIdFireStore()).delete();
         items.remove(position);
 
@@ -47,7 +47,7 @@ public class FilmeAdapter extends RecyclerView.Adapter<FilmeHolder> {
         storage = FirebaseStorage.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        StorageReference imageRef = storage.child("posters/" + user.getEmail() + "/" + idFireStore + ".jpeg");
+        StorageReference imageRef = storage.child("posters/" + user.getUid() + "/" + idFireStore + ".jpeg");
         imageRef.delete();
     }
 
@@ -73,7 +73,7 @@ public class FilmeAdapter extends RecyclerView.Adapter<FilmeHolder> {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReferenceFromUrl("gs://pi-5-periodo.appspot.com/posters/"
-                + user.getEmail() + "/" + items.get(position).getIdFireStore() + ".jpeg");
+                + user.getUid() + "/" + items.get(position).getIdFireStore() + ".jpeg");
 
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

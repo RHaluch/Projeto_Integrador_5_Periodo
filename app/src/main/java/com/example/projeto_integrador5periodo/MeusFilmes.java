@@ -77,13 +77,8 @@ public class MeusFilmes extends AppCompatActivity {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-        CollectionReference filmes;
-
-        try{
-            filmes = db.collection("usuarios").document(user.getEmail()).collection("filmes");
-        }catch(Exception e){
-            filmes = db.collection("usuarios").document(user.getUid()).collection("filmes");
-        }
+        CollectionReference filmes = db.collection("usuarios").document(user.getUid())
+                .collection("filmes");
 
         query = filmes;
 
