@@ -13,7 +13,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PROJETO INTEGRADOR"
+        android:text="TOP List"
         android:textAlignment="center"
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"/>
@@ -63,7 +63,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Digite o ano de lançamento do filme (opcional)"
+        android:hint="Digite o ano de produção do filme (opcional)"
         android:textAlignment="center"
         android:id="@+id/editAno"/>
 
@@ -90,6 +90,23 @@
             android:layout_gravity="right"
             android:onClick="adicionarFilme"/>
     </GridLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Salvando, por favor aguarde..."
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="10sp"
+        android:id="@+id/textSalvando"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/salvando"
+        android:layout_gravity="center"/>
 
     <GridLayout
         android:id="@+id/Grid"

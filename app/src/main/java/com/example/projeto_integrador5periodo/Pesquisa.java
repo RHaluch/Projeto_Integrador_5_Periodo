@@ -2,6 +2,7 @@ package com.example.projeto_integrador5periodo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.login.LoginManager;
@@ -47,11 +49,12 @@ import java.net.HttpURLConnection;
 public class Pesquisa extends AppCompatActivity {
 
     private TextView textUsuario, textTitulo, textNotaIMDB, textGenero, textDiretor, textEnredo;
-    private TextView textData, textClassificacao, textPais;
+    private TextView textData, textClassificacao, textPais, textSalvando;
     private GridLayout grid;
     private EditText editTitulo, editAno;
     private FirebaseAuth mAuth;
     private ImageView poster;
+    private ProgressBar salvando;
     private FirebaseFirestore dataBase;
     private StorageReference storage;
     private GoogleSignInClient mGoogleSignInClient;
@@ -76,6 +79,8 @@ public class Pesquisa extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         poster = findViewById(R.id.poster);
         grid = findViewById(R.id.Grid);
+        textSalvando = findViewById(R.id.textSalvando);
+        salvando = findViewById(R.id.salvando);
         dataBase = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance().getReference();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -197,6 +202,8 @@ public class Pesquisa extends AppCompatActivity {
         if(filme==null){
             Toast.makeText(Pesquisa.this,"Favor encontrar um filme antes!",Toast.LENGTH_SHORT).show();
         }else{
+            textSalvando.setVisibility(View.VISIBLE);
+            salvando.setVisibility(View.VISIBLE);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             dataBase.collection("usuarios").document(user.getUid()).collection("filmes").add(filme).addOnSuccessListener(
                     new OnSuccessListener<DocumentReference>() {
@@ -232,6 +239,8 @@ public class Pesquisa extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(Pesquisa.this,"Falha ao adicionar filme!",Toast.LENGTH_LONG).show();
+                    textSalvando.setVisibility(View.GONE);
+                    salvando.setVisibility(View.GONE);
                 }
             });
         }
