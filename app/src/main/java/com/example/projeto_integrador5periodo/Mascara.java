@@ -110,24 +110,28 @@ public class Mascara extends AppCompatActivity {
     }
 
     public void processar(View view) {
-        String postUrl= "http://SEU IP AQUI:5000";
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        if (imageFile != null) {
+            String postUrl = "IP:5000";
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        // Read BitMap by file path
-        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(imageFile), options);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
+            // Read BitMap by file path
+            Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(imageFile), options);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
 
-        RequestBody postBodyImage = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("image", "androidFlask.jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
-                .build();
-        info.setVisibility(View.VISIBLE);
-        info.setText("Processando por favor aguarde...");
-        loading.setVisibility(View.VISIBLE);
-        postRequest(postUrl, postBodyImage);
+            RequestBody postBodyImage = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("image", "androidFlask.jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
+                    .build();
+            info.setVisibility(View.VISIBLE);
+            info.setText("Processando por favor aguarde...");
+            loading.setVisibility(View.VISIBLE);
+            postRequest(postUrl, postBodyImage);
+        }else{
+            Toast.makeText(Mascara.this,"Favor selecionar uma foto!",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void postRequest(String postUrl, RequestBody postBody) {
@@ -169,7 +173,6 @@ public class Mascara extends AppCompatActivity {
                         }
                     });
                 }
-                //Handle the error
             }
         });
     }
