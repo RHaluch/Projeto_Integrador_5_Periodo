@@ -49,21 +49,19 @@ public class RecuperarSenha extends AppCompatActivity {
         if(email.isEmpty()){
             editEmail.setError("Digite seu email");
             editEmail.requestFocus();
-            return;
-        }
-
-        mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RecuperarSenha.this, "Email enviado!", Toast.LENGTH_SHORT).show();
-                            voltar();
-                        } else {
-                            Toast.makeText(RecuperarSenha.this, "Falha ao enviar email!", Toast.LENGTH_SHORT).show();
+        }else {
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RecuperarSenha.this, "Email enviado!", Toast.LENGTH_SHORT).show();
+                                voltar();
+                            } else {
+                                Toast.makeText(RecuperarSenha.this, "Falha ao enviar email!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-
+                    });
+        }
     }
 }
